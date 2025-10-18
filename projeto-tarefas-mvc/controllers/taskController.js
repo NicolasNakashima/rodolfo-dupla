@@ -20,6 +20,8 @@ module.exports = {
     await Task.create({
       title: req.body.title,
       description: req.body.description,
+      priority: req.body.priority,
+      dueDate: req.body.dueDate,
       done: false, // O status inicial é sempre 'false'
     });
     // Redireciona o usuário para a página inicial após a criação
@@ -44,6 +46,8 @@ module.exports = {
       {
         title: req.body.title,
         description: req.body.description,
+        priority: req.body.priority,
+        dueDate: req.body.dueDate,
         // Lógica para checkbox: se ele for marcado, req.body.done será 'on', senão será 'undefined'.
         done: req.body.done === "on" ? true : false,
       },
@@ -57,5 +61,12 @@ module.exports = {
     const id = req.body.id;
     await Task.destroy({ where: { id: id } }); // DELETE FROM Tasks WHERE id = ?
     res.redirect("/tasks");
+  },
+
+  async filterTasks(req, res) {
+    const status = req.params.status; // "pendentes" ou "concluidas"
+    const done = status === "concluidas";
+    const tasks = await Task.findAll({ where: { done }, raw: true });
+    res.render("all", { tasks });
   },
 };

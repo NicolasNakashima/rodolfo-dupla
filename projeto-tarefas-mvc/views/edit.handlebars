@@ -1,0 +1,25 @@
+<h2>Editando a tarefa: {{task.title}}</h2>
+<form action="/tasks/edit" method="post">
+  <input type="hidden" name="id" value="{{task.id}}" />
+
+  <label>Título:</label><br />
+  <input type="text" name="title" value="{{task.title}}" required /><br />
+
+  <label>Descrição:</label><br />
+  <input type="text" name="description" value="{{task.description}}" /><br /><br />
+
+  <label>Prioridade:</label><br />
+  <select name="priority" required>
+    <option value="Baixa" {{#if (eq task.priority "Baixa")}}selected{{/if}}>Baixa</option>
+    <option value="Média" {{#if (eq task.priority "Média")}}selected{{/if}}>Média</option>
+    <option value="Alta" {{#if (eq task.priority "Alta")}}selected{{/if}}>Alta</option>
+  </select><br /><br />
+
+  <label>Data de Entrega:</label><br />
+  <input type="date" name="dueDate" value="{{task.dueDate}}" /><br /><br />
+
+  <label for="done">Concluída?</label>
+  <input type="checkbox" id="done" name="done" {{#if task.done}}checked{{/if}} /><br /><br />
+
+  <button type="submit">Salvar Alterações</button>
+</form>

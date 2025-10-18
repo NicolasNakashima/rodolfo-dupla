@@ -1,8 +1,8 @@
 // 1. IMPORTAÇÕES
+require("dotenv").config();
 const express = require("express");
 const exphbs = require("express-handlebars");
 const conn = require("./db/conn");
-const Task = require("./models/Task");
 const taskRoutes = require("./routes/taskRoutes");
 
 // 2. INICIALIZAÇÃO DO EXPRESS
@@ -12,19 +12,26 @@ const PORT = 3000;
 // 3. CONFIGURAÇÃO DE MIDDLEWARES
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.engine("handlebars", exphbs());
+app.use(express.static("public")); // ✅ serve arquivos estáticos (CSS, imagens etc.)
+
+// ✅ Configuração completa do Handlebars com helper e layout padrão
+const hbs = exphbs.create({
+  helpers: {
+    eq: (a, b) => a === b, // usado no edit.handlebars para comparar valores
+  },
+  defaultLayout: "main", // usa views/layouts/main.handlebars como base
+});
+app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
-app.use(express.static("public"));
+app.set("views", "./views"); // garante que ele olhe para a pasta views/
 
 // 4. USO DAS ROTAS
-// o que essa linha nos diz sobre a url do nosso site?
 app.use("/tasks", taskRoutes);
-// a rota "/" redireciona para a rota "/tasks"
 app.get("/", (req, res) => res.redirect("/tasks"));
 
 // 5. CONEXÃO COM O BANCO E INICIALIZAÇÃO DO SERVIDOR
 conn
-  .sync()
+  .sync() // se quiser atualizar automaticamente o banco, use: .sync({ alter: true })
   .then(() => {
     app.listen(PORT, () =>
       console.log(`🚀 Servidor rodando com sucesso em http://localhost:${PORT}`)

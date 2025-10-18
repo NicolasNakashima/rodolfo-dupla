@@ -8,10 +8,20 @@ const Task = db.define("Task", {
   },
   description: {
     type: DataTypes.STRING,
+    allowNull: true,
   },
   done: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
+  },
+  priority: {
+    type: DataTypes.ENUM("Baixa", "Média", "Alta"),
+    allowNull: false,
+    defaultValue: "Baixa",
+  },
+  dueDate: {
+    type: DataTypes.DATEONLY,
+    allowNull: true,
   },
 });
 
